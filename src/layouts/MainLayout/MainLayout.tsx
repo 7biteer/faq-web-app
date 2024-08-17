@@ -2,15 +2,21 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 import { Header } from "./Header";
+import { Box } from "@mui/material";
 
 function MainLayout() {
   return (
-    <div>
+    <Box height="100%">
       <Header />
-      <main>
+      <Box
+        component="main"
+        maxWidth="xl"
+        height="100%"
+        sx={{ display: "flex", flexDirection: "column", mx: "auto" }}
+      >
         <Outlet />
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

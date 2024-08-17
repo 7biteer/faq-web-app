@@ -1,11 +1,15 @@
-import "@radix-ui/themes/styles.css";
-
 import { AppRouter } from "../routes";
+import StoreProviders from "../stores/StoreProviders";
+import ThemeCustomization from "../theme/ThemeCustomization";
 
 function App() {
   return (
     <>
-      <AppRouter />
+      <StoreProviders>
+        <ThemeCustomization>
+          <AppRouter />
+        </ThemeCustomization>
+      </StoreProviders>
     </>
   );
 }

@@ -4,12 +4,23 @@ import { Chip } from "@mui/material";
 interface CategoryChipProps {
   id: string;
   title: string;
-  onClick: () => void;
-  bg: string;
+  variant?: "outlined" | "filled";
+  onClick?: (id: string) => void;
 }
 
-function CategoryChip({ title }: CategoryChipProps) {
-  return <Chip label={title} variant="outlined" />;
+function CategoryChip({
+  id,
+  title,
+  variant = "outlined",
+  onClick,
+}: CategoryChipProps) {
+  return (
+    <Chip
+      label={title}
+      variant={variant}
+      onClick={() => onClick && onClick(id)}
+    />
+  );
 }
 
 export default CategoryChip;
