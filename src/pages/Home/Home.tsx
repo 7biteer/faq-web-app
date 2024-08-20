@@ -6,7 +6,7 @@ import { useQuestionStore } from "@/stores/question-store/question-store-provide
 import { useCategoryStore } from "@/stores/category-store/category-store-provider";
 
 import { QuestionItem } from "./components/QuestionItem";
-import { AddQuestionDialog } from "@/components/AddQuestionDialog";
+import { AddQuestionDialog } from "@/components/AddUpdateQuestionDialog";
 
 function Home() {
   const { items: questions, onAdd } = useQuestionStore((state) => state);

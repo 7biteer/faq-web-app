@@ -10,6 +10,7 @@ export type QuestionActions = {
   onAdd: (question: Omit<Question, "id">) => void;
   onRemove: (id: string) => void;
   onUpdate: (id: string, question: Question) => void;
+  getById: (id: string) => Question | undefined;
 };
 
 export type QuestionStore = QuestionState & QuestionActions;
@@ -21,7 +22,7 @@ export const defaultInitState: QuestionState = {
 export const createQuestionStore = (
   initState: QuestionState = defaultInitState
 ) => {
-  return create<QuestionStore>()((set) => ({
+  return create<QuestionStore>()((set, get) => ({
     ...initState,
     onAdd: (question: Omit<Question, "id">) => {
       set((state) => {
@@ -50,6 +51,10 @@ export const createQuestionStore = (
         localStorage.setItem("questions", JSON.stringify(newQuestionList));
         return { items: newQuestionList };
       });
+    },
+
+    getById: (id: string) => {
+      return get().items.find((item) => item.id === id);
     },
   }));
 };

@@ -6,13 +6,13 @@ import {
   Button,
   Container,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useAuthStore } from "../../../stores/auth-store/auth-store-provider";
+import { Logo } from "@/components/Logo";
+import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 
 function Header() {
   const { isLoggedIn, profile, onLogout } = useAuthStore((state) => state);
@@ -32,9 +32,7 @@ function Header() {
       <Container maxWidth="xl">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
-            <Link href="/" variant="h5">
-              FAQ
-            </Link>
+            <Logo />
           </Box>
 
           <Box
@@ -45,15 +43,17 @@ function Header() {
               justifyContent: "flex-end",
             }}
           >
-            {isLoggedIn ? (
+            {!isLoggedIn && !profile ? (
               <Button href="/login" variant="contained">
                 Login
               </Button>
             ) : (
               <>
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Button onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt={profile?.username} />
-                </IconButton>
+
+                  <Typography>{profile?.username}</Typography>
+                </Button>
 
                 <Menu
                   sx={{ mt: "45px" }}
