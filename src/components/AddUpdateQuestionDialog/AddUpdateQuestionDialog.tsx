@@ -12,32 +12,39 @@ import {
   TextField,
 } from "@mui/material";
 import { CreateQuestion } from "@/interfaces/Question";
-import { Category } from "@/interfaces/Category";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { useNavigate } from "react-router-dom";
+import { useQuestionStore } from "@/stores/question-store/question-store-provider";
+import { useCategoryStore } from "@/stores/category-store/category-store-provider";
 
 interface AddUpdateQuestionDialogProps {
   isOpen: boolean;
-  categories: Category[];
+  questionId?: string;
   onClose: () => void;
-  onSubmit: (question: CreateQuestion) => void;
 }
 
 function AddUpdateQuestionDialog({
   isOpen,
-  categories,
+  questionId,
   onClose,
-  onSubmit,
 }: AddUpdateQuestionDialogProps) {
-  const { isLoggedIn, profile } = useAuthStore((state) => state);
   const navigate = useNavigate();
+
+  const { isLoggedIn, profile } = useAuthStore((state) => state);
+  const { onAdd, onUpdate } = useQuestionStore((state) => state);
+  const { items: categories } = useCategoryStore((state) => state);
 
   const { control, handleSubmit, reset, trigger } = useForm<CreateQuestion>({});
 
-  const submitHandler: SubmitHandler<CreateQuestion> = (data) => {
+  const onSubmit: SubmitHandler<CreateQuestion> = (data) => {
     if (isLoggedIn && profile) {
-      onSubmit({ ...data, userId: profile.id });
+      if (!questionId) {
+        onAdd({ ...data, userId: profile.id });
+      } else {
+        onUpdate(questionId, { ...data, id: questionId, userId: profile.id });
+      }
+
       reset();
     }
   };
@@ -64,7 +71,9 @@ function AddUpdateQuestionDialog({
       aria-labelledby="add-question-dialog-title"
       fullWidth
     >
-      <DialogTitle id="add-question-dialog-title">Add Question</DialogTitle>
+      <DialogTitle id="add-question-dialog-title">
+        {questionId ? "Update" : "Add"} Question
+      </DialogTitle>
 
       <DialogContent>
         <Stack component="form" noValidate mt={2} spacing={3}>
@@ -147,12 +156,8 @@ function AddUpdateQuestionDialog({
           Cancel
         </Button>
 
-        <Button
-          variant="contained"
-          autoFocus
-          onClick={handleSubmit(submitHandler)}
-        >
-          Add
+        <Button variant="contained" autoFocus onClick={handleSubmit(onSubmit)}>
+          {questionId ? "Update" : "Add"}
         </Button>
       </DialogActions>
     </Dialog>

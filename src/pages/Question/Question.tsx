@@ -17,6 +17,7 @@ import { useQuestionStore } from "@/stores/question-store/question-store-provide
 import { CategoryChip } from "@/components/CategoryChip";
 import { AnswerItem } from "./components/AnswerItem";
 import { AddUpdateAnswerDialog } from "@/components/AddUpdateAnswerDialog";
+import AddUpdateQuestionDialog from "@/components/AddUpdateQuestionDialog/AddUpdateQuestionDialog";
 
 function Question() {
   const { id } = useParams();
@@ -116,6 +117,13 @@ function Question() {
         isOpen={isAddAnswerDialogOpen}
         questionId={id}
         onClose={() => setIsAddAnswerDialogOpen(false)}
+      />
+
+      <AddUpdateQuestionDialog
+        isOpen={false}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
       />
     </Container>
   );

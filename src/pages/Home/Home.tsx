@@ -9,7 +9,7 @@ import { QuestionItem } from "./components/QuestionItem";
 import { AddQuestionDialog } from "@/components/AddUpdateQuestionDialog";
 
 function Home() {
-  const { items: questions, onAdd } = useQuestionStore((state) => state);
+  const { items: questions } = useQuestionStore((state) => state);
   const {
     items: categories,
     selectedTag,
@@ -77,8 +77,6 @@ function Home() {
       <AddQuestionDialog
         isOpen={isAddQuestionDialogOpen}
         onClose={() => setIsAddQuestionDialogOpen(false)}
-        onSubmit={onAdd}
-        categories={categories}
       />
     </Box>
   );
