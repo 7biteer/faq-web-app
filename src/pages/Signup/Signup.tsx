@@ -6,17 +6,22 @@ import {
   Container,
   Grid,
   Link,
-  TextField,
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { SignupUser } from "@/interfaces/User";
+import { TextFieldForm } from "@/components/Form/TextFieldForm";
 
 function Signup() {
   const { onSignup } = useAuthStore((state) => state);
 
-  const signupHandler = () => {
-    onSignup({ email: "", password: "", username: "" });
+  const { control, handleSubmit, reset } = useForm<SignupUser>({});
+
+  const onSubmit: SubmitHandler<SignupUser> = (data) => {
+    onSignup(data);
+    reset();
   };
 
   return (
@@ -36,35 +41,28 @@ function Signup() {
           Create Account
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="text"
+          <TextFieldForm
+            name="username"
+            control={control}
             autoComplete="username"
             autoFocus
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
+
+          <TextFieldForm
             name="email"
+            control={control}
             autoComplete="email"
             autoFocus
+            label="Email Address"
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+
+          <TextFieldForm
             name="password"
+            control={control}
+            autoComplete="current-password"
+            autoFocus
             label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
           />
 
           <Button
@@ -72,6 +70,7 @@ function Signup() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            onClick={handleSubmit(onSubmit)}
           >
             Sign In
           </Button>

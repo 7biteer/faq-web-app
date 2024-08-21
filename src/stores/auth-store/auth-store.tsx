@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User } from "@/interfaces/User";
+import { SignupUser, User } from "@/interfaces/User";
 import { Test_User } from "@/DUMMY_DATA";
 
 export type AuthState = {
@@ -11,7 +11,7 @@ export type AuthState = {
 export type AuthActions = {
   onLogout: () => void;
   onLogin: (emailOrUsername: string, password: string) => void;
-  onSignup: (user: Omit<User, "id">) => void;
+  onSignup: (user: SignupUser) => void;
   getByUserId: (userId: string) => User | undefined;
 };
 
