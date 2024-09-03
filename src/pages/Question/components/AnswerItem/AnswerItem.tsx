@@ -4,11 +4,11 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardHeader,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
@@ -39,16 +39,20 @@ function AnswerItem({
     if (isLoggedIn && profile && profile.id === userId) {
       return (
         <Stack direction="row" spacing={2}>
-          <IconButton
-            color="primary"
-            onClick={() => setIsUpdateAnswerDialogOpen(true)}
-          >
-            <ModeIcon />
-          </IconButton>
+          <Tooltip title="Modify" placement="top" arrow>
+            <IconButton
+              color="primary"
+              onClick={() => setIsUpdateAnswerDialogOpen(true)}
+            >
+              <ModeIcon />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton color="primary" onClick={() => onRemove(id)}>
-            <BackspaceIcon />
-          </IconButton>
+          <Tooltip title="Delete" placement="top" arrow>
+            <IconButton color="primary" onClick={() => onRemove(id)}>
+              <BackspaceIcon />
+            </IconButton>
+          </Tooltip>
         </Stack>
       );
     }
@@ -81,20 +85,24 @@ function AnswerItem({
         </CardContent>
 
         <Box>
-          <Button
-            endIcon={<ThumbUpIcon />}
-            onClick={() => isLoggedIn && onLike(id)}
-          >
-            {likeCount}
-          </Button>
+          <Tooltip title="Like" placement="top" arrow>
+            <Button
+              endIcon={<ThumbUpIcon />}
+              onClick={() => isLoggedIn && onLike(id)}
+            >
+              {likeCount}
+            </Button>
+          </Tooltip>
 
-          <Button
-            endIcon={<ThumbDownAltIcon />}
-            color="error"
-            onClick={() => isLoggedIn && onDislike(id)}
-          >
-            {dislikeCount}
-          </Button>
+          <Tooltip title="Dislike" placement="top" arrow>
+            <Button
+              endIcon={<ThumbDownAltIcon />}
+              color="error"
+              onClick={() => isLoggedIn && onDislike(id)}
+            >
+              {dislikeCount}
+            </Button>
+          </Tooltip>
         </Box>
       </Card>
 

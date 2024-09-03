@@ -10,7 +10,7 @@ export type AuthState = {
 
 export type AuthActions = {
   onLogout: () => void;
-  onLogin: (data: LoginUser) => void;
+  onLogin: (data: LoginUser) => boolean;
   onSignup: (user: SignupUser) => void;
   getByUserId: (userId: string) => User | undefined;
   updateProfile: (id: string, data: Profile) => void;
@@ -55,6 +55,8 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
           return {};
         }
       });
+
+      return get().isLoggedIn;
     },
 
     onSignup: (user: Omit<User, "id">) => {

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -7,26 +8,34 @@ import {
   Container,
   Grid,
   Link,
+  Stack,
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { SubmitHandler, useForm } from "react-hook-form";
+import InfoIcon from "@mui/icons-material/Info";
+import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { TextFieldForm } from "@/components/Form/TextFieldForm";
 import { LoginUser } from "@/interfaces/User";
-import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
   const { onLogin } = useAuthStore((state) => state);
 
+  const [isError, setIsError] = useState(false);
+
   const { control, handleSubmit, reset } = useForm<LoginUser>({});
 
   const onSubmit: SubmitHandler<LoginUser> = (data) => {
-    onLogin(data);
-    reset();
-    navigate("/");
+    if (onLogin(data)) {
+      setIsError(false);
+      reset();
+      navigate("/");
+    } else {
+      setIsError(true);
+    }
   };
 
   return (
@@ -53,7 +62,23 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
+
+          <Stack mt={5} mb={2} spacing={2}>
+            <Alert icon={<InfoIcon fontSize="inherit" />} severity="info">
+              <span>
+                Use <strong>test@email.com</strong>
+              </span>{" "}
+              <span>
+                with password <strong>asdASD123!</strong>
+              </span>
+            </Alert>
+
+            {isError && (
+              <Alert severity="error">Incorrect email or password</Alert>
+            )}
+          </Stack>
+
+          <Box component="form" noValidate>
             <TextFieldForm
               id="email"
               label="Email Address"

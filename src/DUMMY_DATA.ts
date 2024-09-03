@@ -37,17 +37,22 @@ export const Test_User = [
   {
     id: "u1",
     username: "Test Elek",
-    email: "elek@test.com",
-    password: "test",
+    email: "test@email.com",
+    password: "asdASD123!",
     avatarUrl:
       "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
-  { id: "u2", username: "John Dee", email: "john@dee.com", password: "dee" },
+  {
+    id: "u2",
+    username: "John Dee",
+    email: "john@email.com",
+    password: "asdASD123",
+  },
   {
     id: "u3",
     username: "Mary Lee",
-    email: "mary@lee.com",
-    password: "lee",
+    email: "mary@email.com",
+    password: "asdASD123",
     avatarUrl:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },

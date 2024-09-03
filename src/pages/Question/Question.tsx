@@ -8,6 +8,7 @@ import {
   Grid,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -64,12 +65,14 @@ function Question() {
                     <Typography variant="h6">{question.title}</Typography>
 
                     {profile?.id === question.userId && (
-                      <IconButton
-                        color="primary"
-                        onClick={() => setIsUpdateQuestionDialogOpen(true)}
-                      >
-                        <ModeIcon />
-                      </IconButton>
+                      <Tooltip title="Modify" placement="top" arrow>
+                        <IconButton
+                          color="primary"
+                          onClick={() => setIsUpdateQuestionDialogOpen(true)}
+                        >
+                          <ModeIcon />
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </Stack>
 
