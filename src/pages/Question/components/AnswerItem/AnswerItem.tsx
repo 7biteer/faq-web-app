@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import {
+  Avatar,
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -28,37 +30,49 @@ function AnswerItem({
   dislikeCount,
 }: Answer) {
   const { isLoggedIn, profile, getByUserId } = useAuthStore((state) => state);
-  const { onRemove } = useAnswerStore((state) => state);
+  const { onRemove, onLike, onDislike } = useAnswerStore((state) => state);
 
   const [isUpdateAnswerDialogOpen, setIsUpdateAnswerDialogOpen] =
     useState(false);
 
   const ActionsComponents = () => {
-    if (!isLoggedIn && profile?.id !== userId) {
-      return null;
+    if (isLoggedIn && profile && profile.id === userId) {
+      return (
+        <Stack direction="row" spacing={2}>
+          <IconButton
+            color="primary"
+            onClick={() => setIsUpdateAnswerDialogOpen(true)}
+          >
+            <ModeIcon />
+          </IconButton>
+
+          <IconButton color="primary" onClick={() => onRemove(id)}>
+            <BackspaceIcon />
+          </IconButton>
+        </Stack>
+      );
     }
 
-    return (
-      <Stack direction="row" spacing={2}>
-        <IconButton
-          color="primary"
-          onClick={() => setIsUpdateAnswerDialogOpen(true)}
-        >
-          <ModeIcon />
-        </IconButton>
-
-        <IconButton color="primary" onClick={() => onRemove(id)}>
-          <BackspaceIcon />
-        </IconButton>
-      </Stack>
-    );
+    return null;
   };
+
+  const user = getByUserId(userId);
 
   return (
     <>
       <Card>
         <CardHeader
-          title={getByUserId(userId)?.username}
+          title={
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Avatar
+                alt={user?.username}
+                src={user?.avatarUrl}
+                sx={{ width: 32, height: 32 }}
+              />
+
+              <Typography variant="h6">{user?.username}</Typography>
+            </Stack>
+          }
           action={<ActionsComponents />}
         />
 
@@ -66,10 +80,22 @@ function AnswerItem({
           <Typography>{text}</Typography>
         </CardContent>
 
-        <CardActionArea>
-          <Button endIcon={<ThumbUpIcon />}>{likeCount}</Button>
-          <Button endIcon={<ThumbDownAltIcon />}>{dislikeCount}</Button>
-        </CardActionArea>
+        <Box>
+          <Button
+            endIcon={<ThumbUpIcon />}
+            onClick={() => isLoggedIn && onLike(id)}
+          >
+            {likeCount}
+          </Button>
+
+          <Button
+            endIcon={<ThumbDownAltIcon />}
+            color="error"
+            onClick={() => isLoggedIn && onDislike(id)}
+          >
+            {dislikeCount}
+          </Button>
+        </Box>
       </Card>
 
       <AddUpdateAnswerDialog

@@ -29,8 +29,7 @@ function TextFieldForm<TFieldValues extends FieldValues = FieldValues>({
 }: TextFieldFormProps<TFieldValues>) {
   const inputFielProps = {
     fullWidth: rest.fullWidth ?? true,
-    margin: rest.margin ?? "dense",
-    size: rest.size ?? "small",
+    margin: rest.margin ?? "normal",
     inputProps: {
       ...rest.inputProps,
       readOnly: readOnly,
@@ -56,7 +55,7 @@ function TextFieldForm<TFieldValues extends FieldValues = FieldValues>({
           error={!noErrorMsg && !!fieldState.error}
           helperText={
             !noErrorMsg && !!fieldState.error
-              ? fieldState.error?.type
+              ? fieldState.error?.message
               : rest.helperText
           }
         />

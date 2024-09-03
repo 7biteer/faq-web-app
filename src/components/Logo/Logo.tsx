@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, Typography } from "@mui/material";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import img from "../../../public/favicon-32x32.png";
 
 function Logo() {
   return (
     <Link href="/" display="flex" alignItems="center" gap={1}>
-      <QuestionAnswerIcon />
+      <img src={img} />
 
       <Typography variant="h4">FAQ</Typography>
     </Link>

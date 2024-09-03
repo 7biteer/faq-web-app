@@ -8,25 +8,34 @@ export type AnswerState = {
 
 export type AnswerActions = {
   getByQuestionId: (questionId: string) => Answer[];
+  getById: (id: string) => Answer | undefined;
   onAdd: (answer: CreateUpdateAnswer) => void;
   onRemove: (id: string) => void;
   onUpdate: (id: string, Answer: CreateUpdateAnswer) => void;
+  onLike: (id: string) => void;
+  onDislike: (id: string) => void;
 };
 
 export type AnswerStore = AnswerState & AnswerActions;
 
 export const defaultInitState: AnswerState = {
-  items: Test_Answer,
+  items: localStorage.getItem("answers")
+    ? JSON.parse(localStorage.getItem("answers")!)
+    : Test_Answer,
 };
 
 export const createAnswerStore = (
-  initState: AnswerState = defaultInitState
+  initState: AnswerState = defaultInitState,
 ) => {
   return create<AnswerStore>()((set, get) => ({
     ...initState,
 
     getByQuestionId: (questionId: string) => {
       return get().items.filter((item) => item.questionId === questionId);
+    },
+
+    getById: (id: string) => {
+      return get().items.find((item) => item.id === id);
     },
 
     onAdd: (answer: CreateUpdateAnswer) => {
@@ -60,8 +69,40 @@ export const createAnswerStore = (
                 likeCount: item.likeCount,
                 dislikeCount: item.dislikeCount,
               }
-            : item
+            : item,
         );
+        localStorage.setItem("answers", JSON.stringify(newAnswerList));
+        return { items: newAnswerList };
+      });
+    },
+
+    onLike: (id) => {
+      set((state) => {
+        const newAnswerList = state.items.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                likeCount: item.likeCount + 1,
+              }
+            : item,
+        );
+
+        localStorage.setItem("answers", JSON.stringify(newAnswerList));
+        return { items: newAnswerList };
+      });
+    },
+
+    onDislike: (id) => {
+      set((state) => {
+        const newAnswerList = state.items.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                dislikeCount: item.dislikeCount + 1,
+              }
+            : item,
+        );
+
         localStorage.setItem("answers", JSON.stringify(newAnswerList));
         return { items: newAnswerList };
       });

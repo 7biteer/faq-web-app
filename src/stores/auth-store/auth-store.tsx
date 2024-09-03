@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { SignupUser, User } from "@/interfaces/User";
+import { LoginUser, Profile, SignupUser, User } from "@/interfaces/User";
 import { Test_User } from "@/DUMMY_DATA";
 
 export type AuthState = {
@@ -10,17 +10,22 @@ export type AuthState = {
 
 export type AuthActions = {
   onLogout: () => void;
-  onLogin: (emailOrUsername: string, password: string) => void;
+  onLogin: (data: LoginUser) => void;
   onSignup: (user: SignupUser) => void;
   getByUserId: (userId: string) => User | undefined;
+  updateProfile: (id: string, data: Profile) => void;
 };
 
 export type AuthStore = AuthState & AuthActions;
 
 export const defaultInitState: AuthState = {
-  isLoggedIn: false,
-  profile: null,
-  users: Test_User,
+  isLoggedIn: localStorage.getItem("isLoggedIn") === "1" ?? false,
+  profile: localStorage.getItem("isLoggedProfile")
+    ? JSON.parse(localStorage.getItem("isLoggedProfile")!)
+    : null,
+  users: localStorage.getItem("regUsers")
+    ? JSON.parse(localStorage.getItem("regUsers")!)
+    : Test_User,
 };
 
 export const createAuthStore = (initState: AuthState = defaultInitState) => {
@@ -33,12 +38,10 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
       set(() => ({ isLoggedIn: false, profile: null }));
     },
 
-    onLogin: (emailOrUsername: string, password: string) => {
+    onLogin: ({ email, password }: LoginUser) => {
       set((state) => {
         const user = state.users.find(
-          (u) =>
-            (u.username === emailOrUsername || u.email === emailOrUsername) &&
-            u.password === password
+          (u) => u.email === email && u.password === password,
         );
         if (user) {
           localStorage.setItem("isLoggedIn", "1");
@@ -68,6 +71,28 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
 
     getByUserId: (userId: string) => {
       return get().users.find((user) => user.id === userId);
+    },
+
+    updateProfile: (id: string, data: Profile) => {
+      set((state) => {
+        const user = state.users.find((user) => user.id === id);
+        if (user) {
+          const updatedUser: User = {
+            id: user.id,
+            password: user.password,
+            ...data,
+          };
+
+          const newUsers = state.users.map((user) =>
+            user.id === id ? updatedUser : user,
+          );
+
+          localStorage.setItem("regUsers", JSON.stringify(newUsers));
+          return { users: newUsers, profile: updatedUser };
+        }
+
+        return {};
+      });
     },
   }));
 };

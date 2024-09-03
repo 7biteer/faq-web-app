@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, Grid, Link, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Card,
+  Grid,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { CategoryChip } from "@/components/CategoryChip";
@@ -34,19 +42,6 @@ function QuestionItem({
   return (
     <Card onClick={() => navigation(`/${id}`)} sx={{ cursor: "pointer" }}>
       <Grid container p={2}>
-        <Grid
-          item
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          xs={1}
-        >
-          <Typography>{answerCount}</Typography>
-
-          <Typography>answer</Typography>
-        </Grid>
-
         <Grid item xs={11}>
           <Stack spacing={2}>
             <Stack spacing={1}>
@@ -54,14 +49,22 @@ function QuestionItem({
                 {title}
               </Link>
 
-              <Typography component="span" variant="body2">
-                {user?.username}
-              </Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Avatar
+                  alt={user?.username}
+                  src={user?.avatarUrl}
+                  sx={{ width: 24, height: 24 }}
+                />
+
+                <Typography component="span" variant="body2">
+                  {user?.username}
+                </Typography>
+              </Stack>
             </Stack>
 
             <Typography>{description}</Typography>
 
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" flexWrap="wrap" spacing={1}>
               {categories
                 .filter((item) => tag?.find((element) => element === item.id))
                 .map((item) => (
@@ -74,6 +77,27 @@ function QuestionItem({
                 ))}
             </Stack>
           </Stack>
+        </Grid>
+
+        <Grid
+          item
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-end"
+          justifyContent="flex-end"
+          xs={12}
+          sm={1}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography>{answerCount}</Typography>
+
+            <Typography>answer</Typography>
+          </Box>
         </Grid>
       </Grid>
     </Card>

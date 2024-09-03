@@ -14,9 +14,9 @@ import {
 import { CreateQuestion } from "@/interfaces/Question";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
-import { useNavigate } from "react-router-dom";
 import { useQuestionStore } from "@/stores/question-store/question-store-provider";
 import { useCategoryStore } from "@/stores/category-store/category-store-provider";
+import { TextFieldForm } from "../Form/TextFieldForm";
 
 interface AddUpdateQuestionDialogProps {
   isOpen: boolean;
@@ -29,13 +29,13 @@ function AddUpdateQuestionDialog({
   questionId,
   onClose,
 }: AddUpdateQuestionDialogProps) {
-  const navigate = useNavigate();
-
   const { isLoggedIn, profile } = useAuthStore((state) => state);
-  const { onAdd, onUpdate } = useQuestionStore((state) => state);
+  const { getById, onAdd, onUpdate } = useQuestionStore((state) => state);
   const { items: categories } = useCategoryStore((state) => state);
 
-  const { control, handleSubmit, reset, trigger } = useForm<CreateQuestion>({});
+  const question = questionId ? getById(questionId) : false;
+
+  const { control, handleSubmit, reset } = useForm<CreateQuestion>({});
 
   const onSubmit: SubmitHandler<CreateQuestion> = (data) => {
     if (isLoggedIn && profile) {
@@ -45,7 +45,7 @@ function AddUpdateQuestionDialog({
         onUpdate(questionId, { ...data, id: questionId, userId: profile.id });
       }
 
-      reset();
+      handleCancel();
     }
   };
 
@@ -56,13 +56,9 @@ function AddUpdateQuestionDialog({
 
   const converterHandler = (selectedItems: string[]) => {
     return selectedItems.map(
-      (select) => categories.find((item) => item.id === select)?.title
+      (select) => categories.find((item) => item.id === select)?.title,
     );
   };
-
-  if (!isLoggedIn) {
-    navigate("/login");
-  }
 
   return (
     <Dialog
@@ -77,40 +73,23 @@ function AddUpdateQuestionDialog({
 
       <DialogContent>
         <Stack component="form" noValidate mt={2} spacing={3}>
-          <Controller
+          <TextFieldForm
             name="title"
             control={control}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                id="title"
-                label="Title"
-                required
-                fullWidth
-                autoComplete="title"
-                autoFocus
-                variant="outlined"
-                error={!!fieldState.error}
-                onChange={(event) => {
-                  field.onChange(event);
-                  if (fieldState.error) {
-                    trigger(field.name);
-                  }
-                }}
-              />
-            )}
+            defaultValue={question ? question.title : ""}
+            label="Title"
+            required
           />
 
           <Controller
             name="tag"
             control={control}
-            defaultValue={[]}
+            defaultValue={question ? question.tag : []}
             render={({ field, fieldState }) => (
               <Select
                 {...field}
                 multiple
                 fullWidth
-                label="Tags"
                 error={!!fieldState.error}
                 renderValue={(selected) =>
                   converterHandler(selected).join(", ")
@@ -126,27 +105,14 @@ function AddUpdateQuestionDialog({
             )}
           />
 
-          <Controller
+          <TextFieldForm
             name="description"
             control={control}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                id="description"
-                label="Description"
-                required
-                fullWidth
-                multiline
-                rows={7}
-                error={!!fieldState.error}
-                onChange={(event) => {
-                  field.onChange(event);
-                  if (fieldState.error) {
-                    trigger(field.name);
-                  }
-                }}
-              />
-            )}
+            defaultValue={question ? question.description : ""}
+            label="Description"
+            multiline
+            rows={7}
+            required
           />
         </Stack>
       </DialogContent>

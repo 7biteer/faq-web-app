@@ -3,10 +3,17 @@ export interface User {
   username: string;
   email: string;
   password: string;
+  avatarUrl?: string;
+}
+
+export interface Profile {
+  username: string;
+  email: string;
+  avatarUrl?: string;
 }
 
 export interface LoginUser {
-  emailOrUsername: string;
+  email: string;
   password: string;
 }
 

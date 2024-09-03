@@ -20,7 +20,7 @@ export const defaultInitState: CategoryState = {
 };
 
 export const createCategoryStore = (
-  initState: CategoryState = defaultInitState
+  initState: CategoryState = defaultInitState,
 ) => {
   return create<CategoryStore>()((set) => ({
     ...initState,

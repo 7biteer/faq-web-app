@@ -5,12 +5,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAnswerStore } from "@/stores/answer-store/answer-store-provider";
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { CreateUpdateAnswer } from "@/interfaces/Answer";
+import { TextFieldForm } from "../Form/TextFieldForm";
 
 interface AddUpdateAnswerDialogProps {
   isOpen: boolean;
@@ -26,11 +28,11 @@ function AddUpdateAnswerDialog({
   onClose,
 }: AddUpdateAnswerDialogProps) {
   const { isLoggedIn, profile } = useAuthStore((state) => state);
-  const { onAdd, onUpdate } = useAnswerStore((state) => state);
+  const { getById, onAdd, onUpdate } = useAnswerStore((state) => state);
 
-  const { control, handleSubmit, reset, trigger } = useForm<CreateUpdateAnswer>(
-    {}
-  );
+  const answer = answerId ? getById(answerId) : false;
+
+  const { control, handleSubmit, reset } = useForm<CreateUpdateAnswer>({});
 
   const onSubmit: SubmitHandler<CreateUpdateAnswer> = (data) => {
     if (isLoggedIn && profile) {
@@ -39,7 +41,7 @@ function AddUpdateAnswerDialog({
       } else {
         onAdd({ ...data, questionId, userId: profile.id });
       }
-      reset();
+      handleCancel();
     }
   };
 
@@ -60,28 +62,17 @@ function AddUpdateAnswerDialog({
       </DialogTitle>
 
       <DialogContent>
-        <Controller
-          name="text"
-          control={control}
-          render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              id="text"
-              label="Text"
-              required
-              fullWidth
-              multiline
-              rows={7}
-              error={!!fieldState.error}
-              onChange={(event) => {
-                field.onChange(event);
-                if (fieldState.error) {
-                  trigger(field.name);
-                }
-              }}
-            />
-          )}
-        />
+        <Stack component="form" noValidate mt={2}>
+          <TextFieldForm
+            name="text"
+            control={control}
+            label="Text"
+            defaultValue={answer ? answer.text : ""}
+            required
+            multiline
+            rows={7}
+          />
+        </Stack>
       </DialogContent>
 
       <DialogActions>

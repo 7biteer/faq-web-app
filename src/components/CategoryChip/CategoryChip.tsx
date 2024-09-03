@@ -18,6 +18,7 @@ function CategoryChip({
     <Chip
       label={title}
       variant={variant}
+      clickable={!!onClick}
       onClick={() => onClick && onClick(id)}
     />
   );

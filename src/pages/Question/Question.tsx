@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import {
+  Avatar,
   Box,
   Button,
   Card,
   Container,
   Grid,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import ModeIcon from "@mui/icons-material/Mode";
 
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { useAnswerStore } from "@/stores/answer-store/answer-store-provider";
@@ -34,8 +37,10 @@ function Question() {
   }
 
   const [isAddAnswerDialogOpen, setIsAddAnswerDialogOpen] = useState(false);
+  const [isUpdateQuestionDialogOpen, setIsUpdateQuestionDialogOpen] =
+    useState(false);
 
-  const { getByUserId } = useAuthStore((state) => state);
+  const { isLoggedIn, profile, getByUserId } = useAuthStore((state) => state);
   const { getByQuestionId } = useAnswerStore((state) => state);
   const { items: categories } = useCategoryStore((state) => state);
 
@@ -48,39 +53,48 @@ function Question() {
       <Stack my={3} spacing={3}>
         <Card>
           <Grid container p={2}>
-            <Grid
-              item
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              xs={1}
-            >
-              <Typography>{answerCount}</Typography>
-
-              <Typography>answer</Typography>
-            </Grid>
-
             <Grid item xs={11}>
               <Stack spacing={2}>
                 <Stack spacing={1}>
-                  <Typography variant="h6">{question.title}</Typography>
+                  <Stack
+                    direction="row"
+                    alignContent="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography variant="h6">{question.title}</Typography>
 
-                  <Typography component="span" variant="body2">
-                    {user?.username}
-                  </Typography>
+                    {profile?.id === question.userId && (
+                      <IconButton
+                        color="primary"
+                        onClick={() => setIsUpdateQuestionDialogOpen(true)}
+                      >
+                        <ModeIcon />
+                      </IconButton>
+                    )}
+                  </Stack>
+
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Avatar
+                      alt={user?.username}
+                      src={user?.avatarUrl}
+                      sx={{ width: 24, height: 24 }}
+                    />
+
+                    <Typography component="span" variant="body2">
+                      {user?.username}
+                    </Typography>
+                  </Stack>
                 </Stack>
 
                 <Typography>{question.description}</Typography>
 
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" flexWrap="wrap" spacing={1}>
                   {categories
                     .filter((item) =>
-                      question.tag.find((element) => element === item.id)
+                      question.tag.find((element) => element === item.id),
                     )
                     .map((item) => (
                       <CategoryChip
-                        key={item.id}
                         id={item.id}
                         title={item.title}
                         variant="filled"
@@ -88,6 +102,27 @@ function Question() {
                     ))}
                 </Stack>
               </Stack>
+            </Grid>
+
+            <Grid
+              item
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-end"
+              justifyContent="flex-end"
+              xs={12}
+              sm={1}
+            >
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography>{answerCount}</Typography>
+
+                <Typography>answer</Typography>
+              </Box>
             </Grid>
           </Grid>
         </Card>
@@ -98,19 +133,21 @@ function Question() {
           ))}
         </Stack>
 
-        <Box
-          width="100%"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Button
-            onClick={() => setIsAddAnswerDialogOpen(true)}
-            variant="contained"
+        {isLoggedIn && (
+          <Box
+            width="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
           >
-            Add answer
-          </Button>
-        </Box>
+            <Button
+              onClick={() => setIsAddAnswerDialogOpen(true)}
+              variant="contained"
+            >
+              Add answer
+            </Button>
+          </Box>
+        )}
       </Stack>
 
       <AddUpdateAnswerDialog
@@ -120,10 +157,9 @@ function Question() {
       />
 
       <AddUpdateQuestionDialog
-        isOpen={false}
-        onClose={function (): void {
-          throw new Error("Function not implemented.");
-        }}
+        isOpen={isUpdateQuestionDialogOpen}
+        questionId={id}
+        onClose={() => setIsUpdateQuestionDialogOpen(false)}
       />
     </Container>
   );

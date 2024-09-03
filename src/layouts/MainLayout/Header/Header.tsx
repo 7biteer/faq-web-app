@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Container,
-  IconButton,
+  Link,
   Menu,
   MenuItem,
   Toolbar,
@@ -28,7 +28,7 @@ function Header() {
   };
 
   return (
-    <AppBar position="sticky" sx={{ background: "#222327" }}>
+    <AppBar position="static" sx={{ background: "#222327" }}>
       <Container maxWidth="xl">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
@@ -50,7 +50,11 @@ function Header() {
             ) : (
               <>
                 <Button onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={profile?.username} />
+                  <Avatar
+                    alt={profile?.username}
+                    src={profile?.avatarUrl}
+                    sx={{ mr: 2 }}
+                  />
 
                   <Typography>{profile?.username}</Typography>
                 </Button>
@@ -71,6 +75,17 @@ function Header() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  <MenuItem>
+                    <Link
+                      href="/profile"
+                      color="white"
+                      underline="none"
+                      textAlign="center"
+                      onClick={handleCloseUserMenu}
+                    >
+                      Profile
+                    </Link>
+                  </MenuItem>
                   <MenuItem onClick={onLogout}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>

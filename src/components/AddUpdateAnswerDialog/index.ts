@@ -1,1 +1,1 @@
-export {default as AddUpdateAnswerDialog} from "./AddUpdateAnswerDialog"
+export { default as AddUpdateAnswerDialog } from "./AddUpdateAnswerDialog";

@@ -7,18 +7,26 @@ import {
   Container,
   Grid,
   Link,
-  TextField,
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
+import { TextFieldForm } from "@/components/Form/TextFieldForm";
+import { LoginUser } from "@/interfaces/User";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const { onLogin } = useAuthStore((state) => state);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    onLogin("", "");
+  const { control, handleSubmit, reset } = useForm<LoginUser>({});
+
+  const onSubmit: SubmitHandler<LoginUser> = (data) => {
+    onLogin(data);
+    reset();
+    navigate("/");
   };
 
   return (
@@ -45,31 +53,23 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+          <Box component="form" noValidate sx={{ mt: 1 }}>
+            <TextFieldForm
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
               autoFocus
+              control={control}
             />
-            <TextField
-              margin="normal"
-              required
+            <TextFieldForm
               fullWidth
               name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
+              control={control}
             />
 
             <Button
@@ -77,8 +77,9 @@ function Login() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit(onSubmit)}
             >
-              Sign In
+              Login
             </Button>
 
             <Grid container>

@@ -29,7 +29,7 @@ const ThemeCustomization = ({ children }: { children: React.ReactNode }) => {
         },
       },
     }),
-    []
+    [],
   );
 
   const theme = createTheme(themeOptions);

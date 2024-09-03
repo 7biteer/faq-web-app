@@ -1,1 +1,1 @@
-export {default as AnswerItem} from "./AnswerItem"
+export { default as AnswerItem } from "./AnswerItem";

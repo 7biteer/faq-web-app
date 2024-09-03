@@ -6,7 +6,7 @@ import { type QuestionStore, createQuestionStore } from "./question-store";
 export type QuestionStoreApi = ReturnType<typeof createQuestionStore>;
 
 export const QuestionStoreContext = createContext<QuestionStoreApi | undefined>(
-  undefined
+  undefined,
 );
 
 export interface QuestionStoreProviderProps {
@@ -29,13 +29,13 @@ export const QuestionStoreProvider = ({
 };
 
 export const useQuestionStore = <T,>(
-  selector: (store: QuestionStore) => T
+  selector: (store: QuestionStore) => T,
 ): T => {
   const questionStoreContext = useContext(QuestionStoreContext);
 
   if (!questionStoreContext) {
     throw new Error(
-      `useQuestionStore must be used within QuestionStoreProvider`
+      `useQuestionStore must be used within QuestionStoreProvider`,
     );
   }
 

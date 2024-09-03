@@ -16,11 +16,13 @@ export type QuestionActions = {
 export type QuestionStore = QuestionState & QuestionActions;
 
 export const defaultInitState: QuestionState = {
-  items: Test_Question,
+  items: localStorage.getItem("questions")
+    ? JSON.parse(localStorage.getItem("questions")!)
+    : Test_Question,
 };
 
 export const createQuestionStore = (
-  initState: QuestionState = defaultInitState
+  initState: QuestionState = defaultInitState,
 ) => {
   return create<QuestionStore>()((set, get) => ({
     ...initState,
@@ -46,7 +48,7 @@ export const createQuestionStore = (
     onUpdate: (id: string, question: Question) => {
       set((state) => {
         const newQuestionList = state.items.map((item) =>
-          item.id === id ? question : item
+          item.id === id ? question : item,
         );
         localStorage.setItem("questions", JSON.stringify(newQuestionList));
         return { items: newQuestionList };

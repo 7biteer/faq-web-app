@@ -6,7 +6,7 @@ import { type AnswerStore, createAnswerStore } from "./answer-store";
 export type AnswerStoreApi = ReturnType<typeof createAnswerStore>;
 
 export const AnswerStoreContext = createContext<AnswerStoreApi | undefined>(
-  undefined
+  undefined,
 );
 
 export interface AnswerStoreProviderProps {
