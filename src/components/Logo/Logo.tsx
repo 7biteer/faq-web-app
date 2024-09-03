@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, Typography } from "@mui/material";
 import img from "../../../public/favicon-32x32.png";
 

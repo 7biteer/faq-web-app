@@ -1,6 +1,5 @@
 const BLACK = "#000A0F";
 
-const PURE_WHITE = "#FFFFFF";
 const WHITE = "#F2F9FB";
 
 const PRIMARY = {
