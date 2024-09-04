@@ -7,11 +7,20 @@ import {
   Stack,
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { useAnswerStore } from "@/stores/answer-store/answer-store-provider";
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { CreateUpdateAnswer } from "@/interfaces/Answer";
 import { TextFieldForm } from "../Form/TextFieldForm";
+
+const schema = yup.object().shape({
+  text: yup
+    .string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters long"),
+});
 
 interface AddUpdateAnswerDialogProps {
   isOpen: boolean;
@@ -31,9 +40,15 @@ function AddUpdateAnswerDialog({
 
   const answer = answerId ? getById(answerId) : false;
 
-  const { control, handleSubmit, reset } = useForm<CreateUpdateAnswer>({});
+  const { control, handleSubmit, reset } = useForm<
+    Omit<CreateUpdateAnswer, "userId" | "questionId">
+  >({
+    resolver: yupResolver(schema),
+  });
 
-  const onSubmit: SubmitHandler<CreateUpdateAnswer> = (data) => {
+  const onSubmit: SubmitHandler<
+    Omit<CreateUpdateAnswer, "userId" | "questionId">
+  > = (data) => {
     if (isLoggedIn && profile) {
       if (answerId) {
         onUpdate(answerId, { ...data, questionId, userId: profile.id });

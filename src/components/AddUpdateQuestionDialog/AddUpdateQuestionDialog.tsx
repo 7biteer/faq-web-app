@@ -11,12 +11,29 @@ import {
 } from "@mui/material";
 import { CreateQuestion } from "@/interfaces/Question";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { useAuthStore } from "@/stores/auth-store/auth-store-provider";
 import { useQuestionStore } from "@/stores/question-store/question-store-provider";
 import { useCategoryStore } from "@/stores/category-store/category-store-provider";
 
 import { TextFieldForm } from "../Form/TextFieldForm";
+
+const schema = yup.object().shape({
+  tag: yup
+    .array()
+    .required("Tag is required")
+    .min(1, "At least one tag is required"),
+  title: yup
+    .string()
+    .required("Title is required")
+    .min(5, "Title must be at least 5 characters long"),
+  description: yup
+    .string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters long"),
+});
 
 interface AddUpdateQuestionDialogProps {
   isOpen: boolean;
@@ -35,9 +52,13 @@ function AddUpdateQuestionDialog({
 
   const question = questionId ? getById(questionId) : false;
 
-  const { control, handleSubmit, reset } = useForm<CreateQuestion>({});
+  const { control, handleSubmit, reset } = useForm<
+    Omit<CreateQuestion, "userId">
+  >({
+    resolver: yupResolver(schema),
+  });
 
-  const onSubmit: SubmitHandler<CreateQuestion> = (data) => {
+  const onSubmit: SubmitHandler<Omit<CreateQuestion, "userId">> = (data) => {
     if (isLoggedIn && profile) {
       if (!questionId) {
         onAdd({ ...data, userId: profile.id });
